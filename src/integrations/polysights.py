@@ -2,6 +2,7 @@
 
 import requests
 from typing import List, Dict, Any, Optional
+from datetime import datetime
 
 from ..utils.logger import Logger
 
@@ -144,6 +145,15 @@ class PolysightsAPI:
 
     def _transform_wallet_data(self, raw_data: Dict[str, Any]) -> Dict[str, Any]:
         """Transform raw wallet data to standard format"""
+        # Parse last_active datetime if it's a string
+        last_active = raw_data.get('last_active')
+        if isinstance(last_active, str):
+            try:
+                # Parse ISO format datetime string
+                last_active = datetime.fromisoformat(last_active.replace('Z', '+00:00'))
+            except (ValueError, AttributeError):
+                last_active = None
+
         return {
             'address': raw_data.get('address') or raw_data.get('wallet_address'),
             'pnl_percent': float(raw_data.get('pnl_percent', 0)),
@@ -155,7 +165,7 @@ class PolysightsAPI:
             'winning_bets': int(raw_data.get('winning_bets', 0)),
             'losing_bets': int(raw_data.get('losing_bets', 0)),
             'markets_count': int(raw_data.get('markets_count', 0)),
-            'last_active': raw_data.get('last_active'),
+            'last_active': last_active,
             'extra_data': raw_data
         }
 
