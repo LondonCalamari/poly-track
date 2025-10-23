@@ -76,7 +76,7 @@ alerts:
 apis:
   polysights:
     enabled: true
-    api_key: ""
+    api_key: ""  # Optional - uses mock data if not provided
     rate_limit_per_minute: 60
 
   polymarket:
@@ -84,13 +84,22 @@ apis:
     rpc_url: "https://polygon-rpc.com"
     rate_limit_per_minute: 120
 
-  nevua_markets:
-    enabled: false
-    api_key: ""
+  polygonscan:
+    enabled: true
+    api_key: ""  # FREE API key from https://polygonscan.com/apis
+    rate_limit_per_second: 5  # Free tier: 5 calls/sec
 
-  hash_dive:
-    enabled: false
-    api_key: ""
+  # Legacy APIs (replaced by built-in alternatives)
+  # No API keys required for these features anymore!
+  blockchain_scanner:
+    enabled: true  # Replaces Nevua Markets - monitors wallets directly
+    auto_track_smart_wallets: true  # Auto-track top performing wallets
+    max_tracked_wallets: 50  # Limit concurrent wallet monitoring
+
+  reputation_system:
+    enabled: true  # Replaces HashDive - internal reputation calculation
+    min_reputation_score: 50  # Minimum score to consider wallet "trusted"
+    require_verification: true  # Verify wallet claims against on-chain data
 
 # Data Storage
 storage:

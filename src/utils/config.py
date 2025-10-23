@@ -37,11 +37,11 @@ class Config:
         if not self.config['apis']['polysights']['api_key']:
             self.config['apis']['polysights']['api_key'] = os.getenv('POLYSIGHTS_API_KEY', '')
 
-        if not self.config['apis']['nevua_markets']['api_key']:
-            self.config['apis']['nevua_markets']['api_key'] = os.getenv('NEVUA_MARKETS_API_KEY', '')
-
-        if not self.config['apis']['hash_dive']['api_key']:
-            self.config['apis']['hash_dive']['api_key'] = os.getenv('HASH_DIVE_API_KEY', '')
+        # PolygonScan (free API)
+        if 'polygonscan' not in self.config['apis']:
+            self.config['apis']['polygonscan'] = {}
+        if not self.config['apis']['polygonscan'].get('api_key'):
+            self.config['apis']['polygonscan']['api_key'] = os.getenv('POLYGONSCAN_API_KEY', '')
 
         if not self.config['apis']['polymarket']['rpc_url']:
             self.config['apis']['polymarket']['rpc_url'] = os.getenv('POLYGON_RPC_URL', 'https://polygon-rpc.com')

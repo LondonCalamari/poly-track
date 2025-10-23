@@ -29,8 +29,9 @@ from src.core.signal_detector import SignalDetector
 from src.core.risk_manager import RiskManager
 from src.integrations.polymarket import PolymarketAPI
 from src.integrations.polysights import PolysightsAPI
-from src.integrations.nevua import NevuaMarketsAPI
-from src.integrations.hashdive import HashDiveAPI
+from src.integrations.polygonscan import PolygonScanAPI
+from src.integrations.blockchain_scanner import BlockchainWalletScanner
+from src.integrations.reputation_system import InternalReputationSystem
 from src.alerts.alert_manager import AlertManager
 
 
@@ -105,13 +106,25 @@ class EdgeCopyTracker:
             self.logger
         )
 
-        self.nevua_api = NevuaMarketsAPI(
-            self.config.get('apis.nevua_markets', {}),
+        # PolygonScan - free blockchain data
+        self.polygonscan_api = PolygonScanAPI(
+            self.config.get('apis.polygonscan', {}),
             self.logger
         )
 
-        self.hashdive_api = HashDiveAPI(
-            self.config.get('apis.hash_dive', {}),
+        # Blockchain scanner - replaces Nevua Markets
+        self.blockchain_scanner = BlockchainWalletScanner(
+            self.polymarket_api,
+            self.polygonscan_api,
+            self.wallet_repo,
+            self.bet_repo,
+            self.logger
+        )
+
+        # Reputation system - replaces HashDive
+        self.reputation_system = InternalReputationSystem(
+            self.wallet_repo,
+            self.bet_repo,
             self.logger
         )
 
