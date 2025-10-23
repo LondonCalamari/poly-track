@@ -27,6 +27,7 @@ from src.core.wallet_tracker import WalletTracker
 from src.core.market_monitor import MarketMonitor
 from src.core.signal_detector import SignalDetector
 from src.core.risk_manager import RiskManager
+from src.core.wallet_discovery import WalletDiscovery
 from src.integrations.polymarket import PolymarketAPI
 from src.integrations.polysights import PolysightsAPI
 from src.integrations.polygonscan import PolygonScanAPI
@@ -128,6 +129,14 @@ class EdgeCopyTracker:
             self.logger
         )
 
+        # Wallet discovery - automatic smart wallet finding
+        self.wallet_discovery = WalletDiscovery(
+            self.polymarket_api,
+            self.wallet_tracker,
+            self.config.wallet_criteria,
+            self.logger
+        )
+
         # Initialize alerts
         self.alert_manager = AlertManager(
             self.config.alerts_config,
@@ -140,21 +149,50 @@ class EdgeCopyTracker:
         """
         Scan and update smart wallet data
 
+        Uses automatic discovery from Polymarket to find smart wallets
+        based on EdgeCopy v1 criteria (PnL >30%, WR >60%, Avg Bet >$10k)
+
         Returns:
             Scan results
         """
         self.logger.info("Starting wallet scan...")
+        self.logger.info("🔍 Using automatic wallet discovery from Polymarket...")
         start_time = datetime.now()
 
-        # Fetch wallet data from Polysights
-        wallet_data = self.polysights_api.get_smart_wallets(
-            min_pnl=self.config.get('wallet_criteria.min_pnl_percent', 30),
-            min_win_rate=self.config.get('wallet_criteria.min_win_rate', 60),
-            min_avg_bet=self.config.get('wallet_criteria.min_avg_bet_size', 10000)
+        # Use automatic discovery from Polymarket
+        discovery_results = self.wallet_discovery.discover_wallets_from_markets(
+            limit_markets=50,  # Scan 50 active markets
+            limit_trades_per_market=100  # Get 100 recent trades per market
         )
 
-        # Update wallet tracker
-        results = self.wallet_tracker.scan_wallets(wallet_data)
+        # Also try Polysights if API key is configured (as backup/supplement)
+        polysights_results = {'total_scanned': 0, 'added': 0, 'updated': 0}
+
+        try:
+            wallet_data = self.polysights_api.get_smart_wallets(
+                min_pnl=self.config.get('wallet_criteria.min_pnl_percent', 30),
+                min_win_rate=self.config.get('wallet_criteria.min_win_rate', 60),
+                min_avg_bet=self.config.get('wallet_criteria.min_avg_bet_size', 10000)
+            )
+
+            if wallet_data and len(wallet_data) > 3:  # More than just mock data
+                self.logger.info(f"✓ Polysights provided {len(wallet_data)} additional wallets")
+                polysights_results = self.wallet_tracker.scan_wallets(wallet_data)
+        except Exception as e:
+            self.logger.debug(f"Polysights unavailable (using discovery only): {e}")
+
+        # Combine results
+        total_added = discovery_results.get('wallets_added', 0) + polysights_results.get('added', 0)
+        total_updated = discovery_results.get('wallets_updated', 0) + polysights_results.get('updated', 0)
+        total_scanned = discovery_results.get('wallets_scanned', 0) + polysights_results.get('total_scanned', 0)
+
+        results = {
+            'total_scanned': total_scanned,
+            'added': total_added,
+            'updated': total_updated,
+            'smart_wallets_found': discovery_results.get('smart_wallets_found', 0),
+            'insider_patterns_found': 0  # Will be calculated by tracker
+        }
 
         # Log scan
         duration = (datetime.now() - start_time).total_seconds()
