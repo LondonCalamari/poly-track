@@ -50,9 +50,9 @@ class Wallet(Base):
     is_insider_pattern = Column(Boolean, default=False)
     reputation_score = Column(Float, default=0.0)
 
-    # Metadata
+    # Extra data (metadata is reserved by SQLAlchemy)
     notes = Column(Text)
-    metadata = Column(JSON)
+    extra_data = Column(JSON)
 
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
@@ -96,8 +96,8 @@ class Market(Base):
     first_detected = Column(DateTime, default=datetime.now)
     last_updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
-    # Metadata
-    metadata = Column(JSON)
+    # Extra data (metadata is reserved by SQLAlchemy)
+    extra_data = Column(JSON)
 
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
@@ -140,8 +140,8 @@ class Bet(Base):
     is_pre_news = Column(Boolean, default=False)
     is_early_entry = Column(Boolean, default=False)
 
-    # Metadata
-    metadata = Column(JSON)
+    # Extra data (metadata is reserved by SQLAlchemy)
+    extra_data = Column(JSON)
 
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
@@ -199,8 +199,8 @@ class Signal(Base):
     profit_loss = Column(Float)
     closed_at = Column(DateTime)
 
-    # Metadata
-    metadata = Column(JSON)
+    # Extra data (metadata is reserved by SQLAlchemy)
+    extra_data = Column(JSON)
 
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
@@ -232,8 +232,8 @@ class ScanLog(Base):
     duration_seconds = Column(Float)
     errors_count = Column(Integer, default=0)
 
-    # Metadata
-    metadata = Column(JSON)
+    # Extra data (metadata is reserved by SQLAlchemy)
+    extra_data = Column(JSON)
 
     created_at = Column(DateTime, default=datetime.now)
 

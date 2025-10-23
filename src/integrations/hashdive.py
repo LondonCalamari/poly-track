@@ -64,7 +64,7 @@ class HashDiveAPI:
                 'trust_level': data.get('trust_level', 'unknown'),
                 'verified': data.get('verified', False),
                 'flags': data.get('flags', []),
-                'metadata': data
+                'extra_data': data
             }
 
         except Exception as e:

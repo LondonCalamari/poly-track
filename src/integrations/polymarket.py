@@ -166,7 +166,7 @@ class PolymarketAPI:
             'is_active': raw_data.get('active', True),
             'is_resolved': raw_data.get('closed', False),
             'resolution': raw_data.get('outcome'),
-            'metadata': raw_data
+            'extra_data': raw_data
         }
 
     def _transform_trade_data(self, raw_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -178,7 +178,7 @@ class PolymarketAPI:
             'bet_side': raw_data.get('side', 'YES'),
             'odds_at_bet': float(raw_data.get('price', 0)),
             'bet_timestamp': self._parse_timestamp(raw_data.get('timestamp')),
-            'metadata': raw_data
+            'extra_data': raw_data
         }
 
     def _parse_timestamp(self, timestamp: Any) -> Optional[datetime]:

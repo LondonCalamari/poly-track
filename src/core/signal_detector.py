@@ -346,7 +346,7 @@ class SignalDetector:
             'is_validated': True,
             'has_red_flags': red_flag_results['has_red_flags'],
             'red_flags': red_flag_results['flags'],
-            'metadata': {
+            'extra_data': {
                 'perfect_bet_checks': perfect_score['checks'],
                 'validation': validation,
                 'red_flag_details': red_flag_results

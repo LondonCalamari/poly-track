@@ -156,7 +156,7 @@ class PolysightsAPI:
             'losing_bets': int(raw_data.get('losing_bets', 0)),
             'markets_count': int(raw_data.get('markets_count', 0)),
             'last_active': raw_data.get('last_active'),
-            'metadata': raw_data
+            'extra_data': raw_data
         }
 
     def _get_mock_smart_wallets(self) -> List[Dict[str, Any]]:
