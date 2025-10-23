@@ -1,0 +1,108 @@
+# EdgeCopy v1 - Polymarket Smart Wallet Tracker Configuration
+
+# Smart Wallet Criteria
+wallet_criteria:
+  min_pnl_percent: 30  # Minimum 30% ROI over 30 days
+  min_win_rate: 60     # Minimum 60% win rate
+  min_avg_bet_size: 10000  # Minimum $10k average bet size
+  max_wallet_age_days: 30  # Track wallets active in last 30 days
+
+# Event-Based Insider Detection
+insider_detection:
+  new_wallet_age_days: 1   # Flag wallets < 1 day old
+  max_markets_for_new: 3   # Flag if betting on < 3 markets
+  enable: true
+
+# Signal Detection Parameters
+signal_detection:
+  min_wallet_overlap: 2     # Minimum 2 smart wallets in same market
+  sync_time_window_minutes: 30  # Bets must be within 30 min of each other
+  min_liquidity: 300000     # Minimum $300k market liquidity
+  pre_event_window_hours_min: 1   # Minimum 1 hour before event
+  pre_event_window_hours_max: 5   # Maximum 5 hours before event
+
+# Perfect Bet Checklist (need 5/6 to trigger)
+perfect_bet:
+  min_liquidity: 500000     # > $500k
+  required_smart_wallets: [2, 3]  # 2-3 smart wallets
+  max_risk_percent: 15      # Max 15% of capital
+  enable_checklist: true
+  min_score: 5              # Minimum 5/6 points
+
+# Risk Management
+risk_management:
+  max_position_risk_percent: 15
+  profit_take_increments: [0.1, 0.15]  # Take profits in 10-15% steps
+  never_average_down: true
+  close_before_major_news: true
+
+# Monitoring Settings
+monitoring:
+  scan_interval_minutes: 10  # Scan Polysights every 10 minutes
+  enable_real_time: true
+  track_wallet_reputation: true
+
+# Red Flag Filters
+red_flags:
+  detect_fake_clusters: true
+  min_wallet_reputation_score: 50
+  detect_low_liquidity_manipulation: true
+  detect_timing_anomalies: true
+  cross_verify_sources: 2  # Require 2+ tools to verify
+
+# Alert Settings
+alerts:
+  telegram:
+    enabled: false
+    bot_token: ""
+    chat_id: ""
+
+  webhook:
+    enabled: false
+    url: ""
+
+  console:
+    enabled: true
+
+  email:
+    enabled: false
+    smtp_server: ""
+    smtp_port: 587
+    from_email: ""
+    to_email: ""
+    password: ""
+
+# API Settings
+apis:
+  polysights:
+    enabled: true
+    api_key: ""
+    rate_limit_per_minute: 60
+
+  polymarket:
+    enabled: true
+    rpc_url: "https://polygon-rpc.com"
+    rate_limit_per_minute: 120
+
+  nevua_markets:
+    enabled: false
+    api_key: ""
+
+  hash_dive:
+    enabled: false
+    api_key: ""
+
+# Data Storage
+storage:
+  database: "sqlite"  # sqlite or postgresql
+  db_path: "./data/polytrack.db"
+  log_path: "./logs/"
+  backup_enabled: true
+  retention_days: 90
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "detailed"  # simple or detailed
+  log_to_file: true
+  log_to_console: true
