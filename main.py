@@ -293,6 +293,8 @@ class EdgeCopyTracker:
 
         for wallet in wallets:
             print(f"\nAddress: {wallet.address}")
+            print(f"  Polymarket: https://polymarket.com/profile/{wallet.address}")
+            print(f"  PolygonScan: https://polygonscan.com/address/{wallet.address}")
             print(f"  PnL: {wallet.pnl_percent:.1f}% | Win Rate: {wallet.win_rate:.1f}% | "
                   f"Avg Bet: ${wallet.avg_bet_size:,.0f}")
             print(f"  Total Bets: {wallet.total_bets} ({wallet.winning_bets}W/{wallet.losing_bets}L)")
