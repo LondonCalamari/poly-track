@@ -1,6 +1,7 @@
 """Database models for EdgeCopy v1"""
 
 from datetime import datetime
+from pathlib import Path
 from sqlalchemy import (
     create_engine,
     Column,
@@ -278,6 +279,15 @@ def init_database(db_path: str = "sqlite:///./data/polytrack.db") -> Database:
     Returns:
         Database instance
     """
+    # Create data directory if using SQLite
+    if db_path.startswith("sqlite:///"):
+        # Extract file path from SQLite URL
+        file_path = db_path.replace("sqlite:///", "")
+        db_file = Path(file_path)
+
+        # Create parent directory if it doesn't exist
+        db_file.parent.mkdir(parents=True, exist_ok=True)
+
     db = Database(db_path)
     db.create_tables()
     return db
